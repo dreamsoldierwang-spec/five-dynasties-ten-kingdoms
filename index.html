@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五代十国 - Five Dynasties and Ten Kingdoms</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部标题栏 -->
+        <header class="header">
+            <h1 class="title">五代十国</h1>
+            <span class="subtitle">Five Dynasties and Ten Kingdoms · 907-960 CE</span>
+        </header>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 左侧：地图区域 -->
+            <section class="map-section">
+                <div class="period-label period-label-bottom-right">
+                    <div class="period-badge" id="periodBadge">后唐时期</div>
+                    <div class="year-display" id="yearDisplay">公元 934 年</div>
+                </div>
+                <div class="map-container" id="mapContainer">
+                    <!-- 历史地图图片 -->
+                    <div class="historical-map-wrapper">
+                        <img id="historicalMap" class="historical-map" src="" alt="五代十国历史地图" />
+                        <div class="map-loading" id="mapLoading">
+                            <span>加载历史地图...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 交互覆盖层（用于点击国家） -->
+                    <svg id="mapOverlay" viewBox="0 0 800 600" class="map-overlay">
+                        <g id="territories"></g>
+                    </svg>
+                    
+
+                </div>
+            </section>
+
+            <!-- 中间：国家详情 -->
+            <section class="detail-section">
+                <div class="detail-header">
+                    <div class="current-year">
+                        <span class="year-number" id="detailYear">934</span>
+                        <span class="year-unit">年</span>
+                        <span class="era-name" id="eraName">应顺二年</span>
+                    </div>
+                </div>
+                
+                <div class="detail-content" id="detailContent">
+                    <!-- 动态内容 -->
+                    <div class="dynasty-info">
+                        <div class="dynasty-badge" id="dynastyBadge">后唐</div>
+                        <div class="ruler-info">
+                            <span class="ruler-name" id="rulerName">李从厚</span>
+                            <span class="ruler-title" id="rulerTitle">(闵帝)</span>
+                        </div>
+                        <div class="capital-info">
+                            <span class="label">都城</span>
+                            <span class="capital" id="capitalName">洛阳</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-section">
+                        <div class="section-title">政权更迭</div>
+                        <div class="event-content" id="eventContent">
+                            <div class="event-title">后蜀建立</div>
+                            <div class="event-ruler">关键人物: 孟知祥 (后蜀高祖)</div>
+                            <div class="event-desc">
+                                孟知祥趁后唐内乱，在成都自立为帝，建立后蜀。后蜀继承前蜀版图，成为五代十国时期四川地区的主要政权。孟知祥同年病逝，其子孟昶继位。
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-section">
+                        <div class="section-title">历史趣闻</div>
+                        <div class="history-content" id="historyContent">
+                            <div class="history-item">
+                                <span class="history-tag">后蜀繁华</span>
+                                <span class="history-ruler">孟知祥</span>
+                            </div>
+                            <div class="history-desc">
+                                孟知祥建后蜀，传子孟昶。孟昶在位三十年，蜀中富庶，"斗米三钱"，有"天府之国"美誉。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧：国家列表 -->
+            <section class="list-section">
+                <div class="list-header">
+                    <h3>当前政权 <span class="kingdom-count" id="kingdomCount">(10)</span></h3>
+                </div>
+                
+                <div class="event-highlight" id="eventHighlight">
+                    <div class="event-label">本年政权变动</div>
+                    <div class="event-tag">建立 后蜀</div>
+                </div>
+                
+                <div class="kingdom-list" id="kingdomList">
+                    <!-- 动态生成国家列表 -->
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部时间轴 -->
+        <footer class="timeline-section">
+            <div class="timeline-container">
+                <div class="timeline-track" id="timelineTrack">
+                    <!-- 年份刻度 -->
+                    <div class="timeline-scale" id="timelineScale"></div>
+                    
+                    <!-- 时间轴滑块 -->
+                    <div class="timeline-slider" id="timelineSlider">
+                        <div class="slider-handle">
+                            <div class="slider-tooltip" id="sliderTooltip">934</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 重要事件标记 -->
+                    <div class="timeline-events" id="timelineEvents"></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

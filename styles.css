@@ -1,0 +1,876 @@
+/* 五代十国历史展示网站样式 */
+
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --accent-gold: #e94560;
+    --accent-yellow: #f4d03f;
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8b8;
+    --text-muted: #6c757d;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --dynasty-color: #8B4513;
+    --kingdom-color: #2E8B57;
+    --other-color: #4682B4;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* 应用容器 */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* 顶部标题栏 */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+    font-size: 32px;
+}
+
+.title-group {
+    flex: 1;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-yellow);
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* 主内容区域 */
+.main-content {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* 地图区域 */
+.map-section {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.period-label {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+/* 右下角的时期标签样式 */
+.period-label-bottom-right {
+    top: auto;
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    text-align: right;
+}
+
+.period-badge {
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.6);
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.year-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-yellow);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.year-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--accent-yellow);
+    text-shadow: 0 2px 10px rgba(244, 208, 63, 0.3);
+}
+
+.year-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.map-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.historical-map {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+    /* 针对1024*722分辨率优化显示 */
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.historical-map.loading {
+    opacity: 0.5;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.map-overlay svg {
+    width: 100%;
+    height: 100%;
+}
+
+.territory {
+    cursor: pointer;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    /* 加深颜色，提高可见度 */
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+}
+
+.territory:hover {
+    opacity: 0.9;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.9));
+}
+
+/* 地图上的文字标签样式 */
+.territory-label {
+    font-size: 16px !important;
+    font-weight: bold !important;
+    fill: #fff !important;
+    text-shadow: 
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 0 4px rgba(0, 0, 0, 0.9) !important;
+    pointer-events: none;
+}
+
+.map-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.map-loading.active {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(244, 208, 63, 0.3);
+    border-top-color: var(--accent-yellow);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* 地图备用提示 */
+.map-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(22, 33, 62, 0.9);
+    z-index: 5;
+}
+
+.fallback-content {
+    text-align: center;
+    padding: 40px;
+}
+
+.fallback-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
+
+.fallback-text {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.fallback-hint {
+    font-size: 14px;
+    color: var(--text-muted);
+    max-width: 300px;
+    line-height: 1.6;
+}
+
+/* 详情区域 */
+.detail-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.detail-card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.detail-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-year {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--accent-yellow);
+}
+
+.detail-era {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.era-name {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.dynasty-badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.dynasty-badge.central {
+    background: var(--dynasty-color);
+    color: white;
+}
+
+.dynasty-badge.local {
+    background: var(--kingdom-color);
+    color: white;
+}
+
+.ruler-info {
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.info-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    min-width: 60px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.capital-tag {
+    background: rgba(244, 208, 63, 0.2);
+    color: var(--accent-yellow);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 皇帝详细信息卡片 */
+.ruler-details {
+    margin-bottom: 20px;
+}
+
+.ruler-info-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ruler-lifespan {
+    font-size: 18px;
+    color: var(--accent-yellow);
+    font-weight: bold;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ruler-personality {
+    font-size: 17px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.ruler-biography {
+    font-size: 17px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.ruler-achievements {
+    font-size: 17px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+
+.ruler-anecdotes {
+    font-size: 17px;
+    color: var(--accent-gold);
+    font-style: italic;
+    line-height: 1.7;
+    background: rgba(244, 208, 63, 0.05);
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.ruler-info-card .label {
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.event-section {
+    background: rgba(233, 69, 96, 0.1);
+    border-left: 3px solid var(--accent-gold);
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 15px;
+}
+
+.event-title {
+    font-size: 18px;
+    color: var(--accent-gold);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.event-desc {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.history-section {
+    background: rgba(244, 208, 63, 0.1);
+    border-left: 3px solid var(--accent-yellow);
+    padding: 18px;
+    border-radius: 0 8px 8px 0;
+}
+
+.history-tag {
+    font-size: 16px;
+    color: var(--accent-yellow);
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.history-content {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* 列表区域 */
+.list-section {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.list-card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.list-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.kingdom-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.event-highlight {
+    background: rgba(233, 69, 96, 0.1);
+    border-left: 3px solid var(--accent-gold);
+    padding: 10px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 15px;
+}
+
+.event-highlight-title {
+    font-size: 12px;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+}
+
+.event-highlight-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.kingdom-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.kingdom-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+}
+
+.kingdom-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.kingdom-item.active {
+    background: rgba(244, 208, 63, 0.1);
+    border: 1px solid rgba(244, 208, 63, 0.3);
+}
+
+.kingdom-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.kingdom-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.kingdom-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.kingdom-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.kingdom-type {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.kingdom-type.dynasty {
+    background: var(--dynasty-color);
+    color: white;
+}
+
+.kingdom-type.kingdom {
+    background: var(--kingdom-color);
+    color: white;
+}
+
+/* 时间轴区域 */
+.timeline-section {
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid var(--border-color);
+}
+
+.timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.timeline-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.timeline-range {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.timeline-container {
+    position: relative;
+    height: 60px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+.timeline-track {
+    position: relative;
+    height: 100%;
+    cursor: pointer;
+}
+
+.timeline-scale {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+.scale-mark {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 8px;
+    background: var(--text-muted);
+}
+
+.scale-mark.major {
+    height: 12px;
+    background: var(--text-secondary);
+}
+
+.scale-label {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.timeline-bar {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    transform: translateY(-50%);
+}
+
+.timeline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-yellow), var(--accent-gold));
+    border-radius: 2px;
+    transition: width 0.1s ease;
+}
+
+.timeline-slider {
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-yellow);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    box-shadow: 0 2px 10px rgba(244, 208, 63, 0.5);
+    transition: transform 0.1s ease;
+    z-index: 10;
+}
+
+.timeline-slider:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+.timeline-slider:active {
+    cursor: grabbing;
+}
+
+.slider-tooltip {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-yellow);
+    color: var(--bg-primary);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.timeline-slider:hover .slider-tooltip,
+    .timeline-slider.dragging .slider-tooltip {
+    opacity: 1;
+}
+
+.slider-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--accent-yellow);
+}
+
+.timeline-events {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    pointer-events: none;
+}
+
+.timeline-event {
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: all;
+    transition: transform 0.2s ease;
+}
+
+.timeline-event:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+.timeline-event.dynasty {
+    background: var(--dynasty-color);
+    box-shadow: 0 0 8px var(--dynasty-color);
+}
+
+.timeline-event.kingdom {
+    background: var(--kingdom-color);
+    box-shadow: 0 0 8px var(--kingdom-color);
+}
+
+.timeline-event.battle {
+    background: var(--accent-gold);
+    box-shadow: 0 0 8px var(--accent-gold);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .map-section {
+        flex: 1;
+        min-height: 300px;
+    }
+    
+    .detail-section {
+        flex: none;
+        max-height: 300px;
+    }
+    
+    .list-section {
+        width: 100%;
+        max-height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .title {
+        font-size: 18px;
+    }
+    
+    .subtitle {
+        display: none;
+    }
+    
+    .main-content {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .year-number {
+        font-size: 32px;
+    }
+    
+    .timeline-section {
+        padding: 10px 15px;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.kingdom-item {
+    animation: fadeIn 0.3s ease;
+}
+
+.territory {
+    animation: fadeIn 0.5s ease;
+}
+
+/* 选中状态的高亮 */
+.kingdom-item.selected .kingdom-name {
+    color: var(--accent-gold);
+}
+
+/* 禁用文本选择 */
+.timeline-slider,
+.territory {
+    user-select: none;
+}
